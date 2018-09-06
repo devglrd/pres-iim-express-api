@@ -60,8 +60,9 @@ app.get('/api/users/:id', (req, res) => {
 
 //POST METHOD
 app.post('/api/users', (req, res) => {
+
     if (!req.body.name || !req.body.email || !req.body.adresse || !req.body.password) {
-        res.send(500).json({"error": "Missing data"})
+        res.status(500).json({"error": "Missing data"})
     }
     let password = req.body.password;
     let saltRounds = 10;
@@ -77,7 +78,7 @@ app.post('/api/users', (req, res) => {
 app.put('/api/users/:id', (req, res) => {
     if (parseInt(req.params.id)) {
         if (!req.body.name || !req.body.email || !req.body.adresse || !req.body.password) {
-            res.send(500).json({"error": "Missing data"})
+            res.status(500).json({"error": "Missing data"})
         }
         let password = req.body.password;
         let saltRounds = 10;
