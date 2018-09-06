@@ -3,6 +3,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import mysql from "mysql";
 import bcrypt from 'bcrypt';
+
 const PORT = 3000;
 
 let app = express();
@@ -11,7 +12,6 @@ app.use(cors());
 app.use(bodyParser.json());
 //permet l'analyse des données encodées dans l'URL avec la la qs bibliothèque
 app.use(bodyParser.urlencoded({extended: false}));
-
 
 
 /// c'est api n'est pas securisé et elle est suceptible d'avoir des injections sql
@@ -52,7 +52,7 @@ app.get('/api/users/:id', (req, res) => {
             if (err) res.state(500).json({"error": err});
             res.status(200).json({"data": result});
         });
-    }else{
+    } else {
         res.status(300).json({"error": "You should pass a integer value"});
     }
 });
@@ -79,17 +79,18 @@ app.put('/api/users/:id', (req, res) => {
     if (parseInt(req.params.id)) {
         if (!req.body.name || !req.body.email || !req.body.adresse || !req.body.password) {
             res.status(500).json({"error": "Missing data"})
+        } else {
+            let password = req.body.password;
+            let saltRounds = 10;
+            let hash = bcrypt.hashSync(password, saltRounds);
+            const sql = `UPDATE users SET name = "${req.body.name}", email = "${req.body.email}", adresse = "${req.body.adresse}", password = "${hash}" WHERE id = ${db.escape(req.params.id)}`;
+            console.log(sql);
+            db.query(sql, (err, result) => {
+                if (err) res.state(500).json({"error": err});
+                res.status(200).json({"data": result});
+            });
         }
-        let password = req.body.password;
-        let saltRounds = 10;
-        let hash = bcrypt.hashSync(password, saltRounds);
-        const sql = `UPDATE users SET name = "${req.body.name}", email = "${req.body.email}", adresse = "${req.body.adresse}", password = "${hash}" WHERE id = ${db.escape(req.params.id)}`;
-        console.log(sql);
-        db.query(sql, (err, result) => {
-            if (err) res.state(500).json({"error": err});
-            res.status(200).json({"data": result});
-        });
-    }else{
+    } else {
         res.status(300).json({"error": "You should pass a integer value"});
     }
 });
@@ -104,7 +105,7 @@ app.delete('/api/users/:id', (req, res) => {
             if (err) res.state(500).json({"error": err});
             res.status(200).json({"data": result});
         });
-    }else{
+    } else {
         res.status(300).json({"error": "You should pass a integer value"});
     }
 });
