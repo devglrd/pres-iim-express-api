@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import mysql from "mysql";
 import bcrypt from 'bcrypt';
 
-const PORT = 3000;
+const PORT = 6001;
 
 let app = express();
 app.use(cors());

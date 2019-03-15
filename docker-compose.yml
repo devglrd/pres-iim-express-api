@@ -1,0 +1,19 @@
+version: '3.5'
+
+services:
+  node-api-users:
+    image: 'node:alpine'
+    container_name: node-api-users
+    volumes:
+      - ./:/app
+    command: bash -c 'cd /app && npm install && npm install -g nodemon && npm start'
+    labels:
+      - "traefik.frontend.rule=Host:api-node.glrd.me"
+      - "traefix.backend=node-api-users"
+      - "traefik.docker.network=traefik"
+    networks:
+      - traefik
+networks:
+  traefik:
+    external:
+      name: ubuntu_webgateway
