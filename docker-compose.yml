@@ -1,6 +1,33 @@
 version: '3.5'
 
 services:
+  node-nginx:
+    image: nginx:latest
+    container_name: node-nginx
+    ports:
+      - "80:6001"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - ./conf:/etc/nginx/conf.d/
+      - ./logs:/var/logs
+    labels:
+      - "traefik.frontend.rule=Host:api-node.glrd.me"
+      - "traefix.backend=node-api-nginx"
+      - "traefik.docker.network=traefik"
+    links:
+      - node-api-users
+    networks:
+      - traefik
+
+  mysql_node_api:
+    image: "mysql:5.7"
+    container_name: mysql_node_api
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=test-pres-iim
+    networks:
+      - traefik
+
   node-api-users:
     image: 'node:alpine'
     container_name: node-api-users
@@ -11,6 +38,8 @@ services:
       - "traefik.frontend.rule=Host:api-node.glrd.me"
       - "traefix.backend=node-api-users"
       - "traefik.docker.network=traefik"
+    links:
+      - mysql_php
     networks:
       - traefik
 networks:

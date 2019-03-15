@@ -21,9 +21,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 //INFORMATION BDD
 let db = mysql.createConnection({
-    host: "127.0.0.1",
+    host: "mysql_node_api",
     user: "root",
-    password: "",
+    password: "root",
     database: "test-pres-iim"
 });
 
